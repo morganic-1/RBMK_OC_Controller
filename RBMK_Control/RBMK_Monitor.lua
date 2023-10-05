@@ -1,4 +1,4 @@
-
+local term require("term")
 -- CONFIG
 
 --- Whether or not the program will automatically be updated from pastebin.
@@ -484,6 +484,8 @@ end
 for _ in pairs(rbmkctrl_table) do
 	table.insert(desync, false)
 end
+
+term.clear()
 -- 1 is basic UI
 -- 2 is miscellaneous
 -- Initialize GPU VRAM buffers along with filling them with content.
@@ -549,7 +551,7 @@ while running do
 		if Boilers then
 			local average_boiler_heat, average_boiler_steam, average_boiler_steam_capacity, average_boiler_water, average_boiler_water_capacity, boiler_type = getAverageRodData("fuel")
 		end
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Overview")
@@ -567,16 +569,16 @@ while running do
 			table.remove(rbmkfuel_Depletion)
 			table.remove(rbmkfuel_Xenon)
 		end
-		--for i, v in pairs(rbmkctrl_table) do
-		--	local a, b = invoke(v, "getInfo")
-		--	table.insert(rbmkctrlheat_table, a)
-		--	if not(b == ctrl_levels[i]) then
-		--		invoke(v, "setLevel", ctrl_levels[i])
-		--		desync[i] = true
-		--	else
-		--		desync[i] = false
-		--	end
-		--end
+		for i, v in pairs(rbmkctrl_table) do
+			local a, b = invoke(v, "getInfo")
+			table.insert(rbmkctrlheat_table, a)
+			if not(b == ctrl_levels[i]) then
+				invoke(v, "setLevel", ctrl_levels[i])
+				desync[i] = true
+			else
+				desync[i] = false
+			end
+		end
 		local heat_1, hull_1, core_1, Sflux_1, Fflux_1, depletion_1, xenon_poison_1 = 0, 0, 0, 0, 0, 0, 0
 		for _, v in pairs(rbmkfuel_table) do
 			local heat, hull, core, Sflux, Fflux, depletion, xenon_poison = getRodData("fuel", v)
@@ -621,7 +623,7 @@ while running do
 			average_core_heat= core_1 / #rbmkfuel_table
 
 		end
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Fuel")
@@ -644,40 +646,40 @@ while running do
 		end
 	end
 	if boiler_page and Boilers then
-		--	local heat_1, water_1, water_max_1, steam_1, steam_max_1 = 0, 0, 0, 0, 0
-		--	for _, v in pairs(rbmkfuel_table) do
-		--		local heat, water, water_max, steam, steam_max, steam_type = getRodData("fuel", v)
-		--		table.insert(rbmkboiler_heat, heat)
-		--		table.insert(rbmkboiler_water, water)
-		--		table.insert(rbmkboiler_maxW, water_max)
-		--		table.insert(rbmkboiler_steam, steam)
-		--		table.insert(rbmkboiler_maxS, steam_max)
-		--		table.insert(rbmkboiler_type, steam_type)
-		--		heat_1 = heat + heat_1
-		--		water_1 = water + Sflux_1
-		--		steam_1 = steam + Fflux_1
-		--	end
-		--	local average_heat = heat_1 / #rbmkfuel_table
-		--	local average_slow_flux = Sflux_1 / #rbmkfuel_table
-		--	local average_fast_flux = Fflux_1 / #rbmkfuel_table
-		--	local average_depletion
-		--	local average_xenon_poison
-		draw_basics()
+			local heat_1, water_1, water_max_1, steam_1, steam_max_1 = 0, 0, 0, 0, 0
+			for _, v in pairs(rbmkfuel_table) do
+				local heat, water, water_max, steam, steam_max, steam_type = getRodData("fuel", v)
+				table.insert(rbmkboiler_heat, heat)
+				table.insert(rbmkboiler_water, water)
+				table.insert(rbmkboiler_maxW, water_max)
+				table.insert(rbmkboiler_steam, steam)
+				table.insert(rbmkboiler_maxS, steam_max)
+				table.insert(rbmkboiler_type, steam_type)
+				heat_1 = heat + heat_1
+				water_1 = water + Sflux_1
+				steam_1 = steam + Fflux_1
+			end
+		local average_heat = heat_1 / #rbmkfuel_table
+		local average_slow_flux = Sflux_1 / #rbmkfuel_table
+		local average_fast_flux = Fflux_1 / #rbmkfuel_table
+		local average_depletion
+		local average_xenon_poison
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Boilers")
-		--	for a, _ in pairs(rbmkfuel_table) do
-		--		local b = funclib.inverse_mod(a, 5)
-		--		gpucomp.fill((b*36) + 46, ((a-b*5)*7) + 8, 20, 7, " ")
-		--		gpucomp.set((b*36) + 46, ((a-b*5)*7)+9, "Fuel Rod #: " .. a)
-		--		gpucomp.set((b*36) + 46, ((a-b*5)*7)+10, "Heat: " .. string.sub(tostring(rbmkfuel_heat[a]), 1, 6) .. "°C" .. pad)
-		--		gpucomp.set((b*36) + 46, ((a-b*5)*7)+11, "Slow Flux: " .. string.sub(tostring(rbmkfuel_Sflux[a]), 1, 6) .. "cm²/s" .. pad)
-		--		gpucomp.set((b*36) + 46, ((a-b*5)*7)+12, "Fast Flux: " .. string.sub(tostring(rbmkfuel_Fflux[a]), 1, 6) .. "cm²/s" .. pad)
-		--		gpucomp.set((b*36) + 46, ((a-b*5)*7)+13, "Depletion: " .. string.sub(tostring(rbmkfuel_Depletion[a]), 1, 6) .. "%" .. pad)
-		--		gpucomp.set((b*36) + 46, ((a-b*5)*7)+14, "Xenon Level: " .. string.sub(tostring(rbmkfuel_Xenon[a]), 1, 6) .. "%" .. pad)
-		--	end
+		for a, _ in pairs(rbmkfuel_table) do
+			local b = funclib.inverse_mod(a, 5)
+			gpucomp.fill((b*36) + 46, ((a-b*5)*7) + 8, 20, 7, " ")
+			gpucomp.set((b*36) + 46, ((a-b*5)*7)+9, "Fuel Rod #: " .. a)
+			gpucomp.set((b*36) + 46, ((a-b*5)*7)+10, "Heat: " .. string.sub(tostring(rbmkfuel_heat[a]), 1, 6) .. "°C" .. pad)
+			gpucomp.set((b*36) + 46, ((a-b*5)*7)+11, "Slow Flux: " .. string.sub(tostring(rbmkfuel_Sflux[a]), 1, 6) .. "cm²/s" .. pad)
+			gpucomp.set((b*36) + 46, ((a-b*5)*7)+12, "Fast Flux: " .. string.sub(tostring(rbmkfuel_Fflux[a]), 1, 6) .. "cm²/s" .. pad)
+			gpucomp.set((b*36) + 46, ((a-b*5)*7)+13, "Depletion: " .. string.sub(tostring(rbmkfuel_Depletion[a]), 1, 6) .. "%" .. pad)
+			gpucomp.set((b*36) + 46, ((a-b*5)*7)+14, "Xenon Level: " .. string.sub(tostring(rbmkfuel_Xenon[a]), 1, 6) .. "%" .. pad)
+		end
 	elseif boiler_page and not Boilers then
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(56, 30, "Boilers Disabled")
@@ -704,7 +706,7 @@ while running do
 				desync[i] = false
 			end
 		end
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Control Rods")
@@ -720,7 +722,7 @@ while running do
 				desync[i] = false
 			end
 		end
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Coolers")
@@ -736,7 +738,7 @@ while running do
 				desync[i] = false
 			end
 		end
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Outgassers")
@@ -752,7 +754,7 @@ while running do
 				desync[i] = false
 			end
 		end
-		draw_basics()
+		 
 		gpucomp.setBackground(0x004900)
 		gpucomp.fill(7, 7, 146, 40, " ")
 		gpucomp.set(8, 8, "RBMK Heaters")
