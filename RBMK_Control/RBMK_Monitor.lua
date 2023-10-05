@@ -41,35 +41,6 @@ local gpucomp = component.gpu
 local invoke = component.invoke
 local rs -- Library initialization (until defined later)
 
--- Check for updates on github (EXPERIMENTAL)
-if component.isAvailable("internet") then
-	-- Check for updates
-	os.execute("wget \"https://raw.githubusercontent.com/BallOfEnergy1/RBMK_Control/master/RBMK_Control/RBMK_Monitor.lua\" \"/RBMK_Control/recent_ver.lua\" -f")
-	local updated_file = io.open("/RBMK_Control/recent_ver.lua")
-	if updated_file:read("*a") == "" then
-		Warn_err("Failed to check for updates, contact support for assistance.")
-		updated_file:close()
-		os.remove("/RBMK_Control/recent_ver.lua")
-	else
-		local existing_file = io.open("/RBMK_Control/RBMK_Monitor.lua")
-		if updated_file:read("*a") == existing_file:read("*a") then
-			print("Program is up-to-date.")
-			os.remove("/RBMK_Control/recent_ver.lua")
-		elseif auto_update then
-			print("Updating program...")
-			require("filesystem").copy("/recent_ver.lua", "/RBMK_Control/RBMK_Monitor.lua")
-			print("Update Successful!")
-			os.remove("/RBMK_Control/recent_ver.lua")
-		else
-			print("Program is out of date; Auto-update is disabled.")
-		end
-		updated_file:close()
-		existing_file:close()
-	end
-else
-	print("Internet card is required for updating; Restart the program with an internet card to update, or continue with startup.")
-end
-
 -- Variable assignment.
 
 -- Tables for rods/control.
