@@ -1,8 +1,4 @@
-local term require("term")
 -- CONFIG
-
---- Whether or not the program will automatically be updated from pastebin.
-local auto_update = true
 
 --- Program-specific config. Cannot be editied for the time being without auto-update screwing it up
 local CONFIG = {
@@ -455,7 +451,7 @@ end
 for _ in pairs(rbmkctrl_table) do
 	table.insert(desync, false)
 end
-
+local term require("term")
 term.clear()
 -- 1 is basic UI
 -- 2 is miscellaneous
